@@ -1,0 +1,4 @@
+const apiToken =
+    "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI1NzcyODhkNDk1OTRlMDMzYjAxMmVkZmI5NTdlYjA2MSIsIm5iZiI6MTc1NzYxMzA3MC42NTIsInN1YiI6IjY4YzMwYzBlYzQxNGFmNGRjYTk0OGNmNCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.IvrRk-o6ydl1IKTsEQ8dajlIkxAQdlylMRy3saDLVvA";
+
+const apiKey = "577288d49594e033b012edfb957eb061";

@@ -1,0 +1,38 @@
+// G:\dev\Flutter\cinephile\android\build.gradle
+
+// ADD THIS ENTIRE BLOCK AT THE TOP
+buildscript {
+    ext.kotlin_version = '1.9.23' // Make sure you have a Kotlin version defined
+    repositories {
+        google()
+        mavenCentral()
+    }
+
+    dependencies {
+        // THIS IS THE LINE TO FIX: Change 8.1.0 to a newer version like 8.2.0
+        classpath 'com.android.tools.build:gradle:8.2.0' 
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+// --- END OF ADDED BLOCK ---
+
+
+// The rest of your file stays the same
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+rootProject.buildDir = "../build"
+subprojects {
+    project.buildDir = "${rootProject.buildDir}/${project.name}"
+}
+subprojects {
+    project.evaluationDependsOn(":app")
+}
+
+tasks.register("clean", Delete) {
+    delete rootProject.buildDir
+}
