@@ -18,6 +18,7 @@ class Cinephile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Cinephile',
       theme: ThemeData(
         brightness: Brightness.dark,
