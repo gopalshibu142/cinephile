@@ -119,10 +119,18 @@ class _HomeState extends State<Home> {
           SliverAppBar(
             pinned: true,
             floating: false,
-            backgroundColor: const Color(0xFF121212),
+            backgroundColor: Colors.transparent,
             elevation: 0,
             toolbarHeight: 80,
             automaticallyImplyLeading: false,
+            flexibleSpace: ClipRect(
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                child: Container(
+                  color: const Color(0xFF121212).withOpacity(0.8),
+                ),
+              ),
+            ),
             title: const Text(
               "Movie Library",
               style: TextStyle(
