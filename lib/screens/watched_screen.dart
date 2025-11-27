@@ -1,4 +1,4 @@
-import 'package:cinephile/Data/movie_provider.dart';
+import 'package:cinephile/Data/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -22,10 +22,9 @@ class WatchedScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: Consumer<MovieProvider>(
-        builder: (context, movieProvider, child) {
-          // Placeholder: Using all movies as watched list for now
-          final movies = movieProvider.allMovies;
+      body: Consumer<UserProvider>(
+        builder: (context, userProvider, child) {
+          final movies = userProvider.watchedMovies;
 
           if (movies.isEmpty) {
             return const Center(
@@ -107,7 +106,37 @@ class WatchedScreen extends StatelessWidget {
                       icon: const Icon(Icons.delete_outline_rounded,
                           color: Colors.grey),
                       onPressed: () {
-                        // Remove from watched logic
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              backgroundColor: const Color(0xFF1E1E1E),
+                              title: const Text("Remove from Watched?",
+                                  style: TextStyle(color: Colors.white)),
+                              content: const Text(
+                                  "Are you sure you want to remove this movie from your watched list?",
+                                  style: TextStyle(color: Colors.white70)),
+                              actions: [
+                                TextButton(
+                                  child: const Text("Cancel",
+                                      style: TextStyle(color: Colors.white54)),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                                TextButton(
+                                  child: const Text("Remove",
+                                      style:
+                                          TextStyle(color: Colors.redAccent)),
+                                  onPressed: () {
+                                    userProvider.unmarkAsWatched(movie);
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        );
                       },
                     ),
                   ],

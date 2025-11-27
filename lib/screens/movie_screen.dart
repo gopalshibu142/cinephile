@@ -1,4 +1,5 @@
 import 'package:cinephile/Data/movie_provider.dart';
+import 'package:cinephile/Data/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -119,16 +120,67 @@ class _MovieScreenState extends State<MovieScreen> {
                     ],
                   ),
                   const SizedBox(height: 30),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      _buildActionButton(Icons.thumb_up_rounded, "Like"),
-                      _buildActionButton(Icons.thumb_down_rounded, "Dislike"),
-                      _buildActionButton(Icons.bookmark_rounded, "Watchlist",
-                          isActive: true),
-                      _buildActionButton(
-                          Icons.check_circle_outline_rounded, "Watched"),
-                    ],
+                  Consumer<UserProvider>(
+                    builder: (context, userProvider, child) {
+                      final isLiked = userProvider.isLiked(widget.movie.id);
+                      final isDisliked =
+                          userProvider.isDisliked(widget.movie.id);
+                      final isWatchlist =
+                          userProvider.isWatchlist(widget.movie.id);
+                      final isWatched = userProvider.isWatched(widget.movie.id);
+
+                      print(
+                          "MovieScreen: Consumer Rebuild - Movie: ${widget.movie.title} (${widget.movie.id})");
+                      print(
+                          "MovieScreen: Status - Liked: $isLiked, Disliked: $isDisliked, Watchlist: $isWatchlist, Watched: $isWatched");
+
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          _buildActionButton(
+                            Icons.thumb_up_rounded,
+                            "Like",
+                            isActive: isLiked,
+                            onTap: () {
+                              print("MovieScreen: Like Button Tapped");
+                              userProvider.toggleLike(widget.movie);
+                            },
+                          ),
+                          _buildActionButton(
+                            Icons.thumb_down_rounded,
+                            "Dislike",
+                            isActive: isDisliked,
+                            onTap: () {
+                              print("MovieScreen: Dislike Button Tapped");
+                              userProvider.toggleDislike(widget.movie);
+                            },
+                          ),
+                          _buildActionButton(
+                            Icons.bookmark_rounded,
+                            "Watchlist",
+                            isActive: isWatchlist,
+                            onTap: () {
+                              print("MovieScreen: Watchlist Button Tapped");
+                              isWatchlist
+                                  ? userProvider
+                                      .removeFromWatchlist(widget.movie)
+                                  : userProvider.addToWatchlist(widget.movie);
+                            },
+                          ),
+                          _buildActionButton(
+                            Icons.check_circle_outline_rounded,
+                            "Watched",
+                            isActive: isWatched,
+                            onTap: () {
+                              print("MovieScreen: Watched Button Tapped");
+                              isWatched
+                                  ? userProvider.unmarkAsWatched(widget.movie)
+                                  : userProvider.markAsWatched(widget.movie);
+                            },
+                          ),
+                        ],
+                      );
+                    },
                   ),
                   const SizedBox(height: 30),
                   const Text(
@@ -246,30 +298,34 @@ class _MovieScreenState extends State<MovieScreen> {
   }
 
   Widget _buildActionButton(IconData icon, String label,
-      {bool isActive = false}) {
-    return Column(
-      children: [
-        Container(
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: isActive ? Colors.redAccent : Colors.white.withOpacity(0.1),
-            shape: BoxShape.circle,
+      {bool isActive = false, VoidCallback? onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color:
+                  isActive ? Colors.redAccent : Colors.white.withOpacity(0.1),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              icon,
+              color: Colors.white,
+              size: 24,
+            ),
           ),
-          child: Icon(
-            icon,
-            color: Colors.white,
-            size: 24,
+          const SizedBox(height: 8),
+          Text(
+            label,
+            style: TextStyle(
+              color: isActive ? Colors.redAccent : Colors.grey,
+              fontSize: 12,
+            ),
           ),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          label,
-          style: TextStyle(
-            color: isActive ? Colors.redAccent : Colors.grey,
-            fontSize: 12,
-          ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

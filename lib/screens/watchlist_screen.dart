@@ -1,4 +1,4 @@
-import 'package:cinephile/Data/movie_provider.dart';
+import 'package:cinephile/Data/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -22,10 +22,9 @@ class WatchlistScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: Consumer<MovieProvider>(
-        builder: (context, movieProvider, child) {
-          // Placeholder: Using trending movies as watchlist for now
-          final movies = movieProvider.trendingMovies;
+      body: Consumer<UserProvider>(
+        builder: (context, userProvider, child) {
+          final movies = userProvider.watchlist;
 
           if (movies.isEmpty) {
             return const Center(
@@ -107,7 +106,37 @@ class WatchlistScreen extends StatelessWidget {
                       icon: const Icon(Icons.bookmark_remove_rounded,
                           color: Colors.redAccent),
                       onPressed: () {
-                        // Remove from watchlist logic
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              backgroundColor: const Color(0xFF1E1E1E),
+                              title: const Text("Remove from Watchlist?",
+                                  style: TextStyle(color: Colors.white)),
+                              content: const Text(
+                                  "Are you sure you want to remove this movie from your watchlist?",
+                                  style: TextStyle(color: Colors.white70)),
+                              actions: [
+                                TextButton(
+                                  child: const Text("Cancel",
+                                      style: TextStyle(color: Colors.white54)),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                                TextButton(
+                                  child: const Text("Remove",
+                                      style:
+                                          TextStyle(color: Colors.redAccent)),
+                                  onPressed: () {
+                                    userProvider.removeFromWatchlist(movie);
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        );
                       },
                     ),
                   ],

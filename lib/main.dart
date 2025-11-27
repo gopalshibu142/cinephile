@@ -1,5 +1,7 @@
 import 'package:cinephile/Data/movie_provider.dart';
+import 'package:cinephile/Data/user_provider.dart';
 import 'package:cinephile/screens/home.dart';
+import 'package:cinephile/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -8,6 +10,8 @@ void main() {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => MovieProvider()),
+        ChangeNotifierProvider(
+            create: (context) => UserProvider()..checkSession()),
       ],
       child: Cinephile(),
     ),
@@ -45,7 +49,18 @@ class Cinephile extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      home: const Home(),
+      home: Consumer<UserProvider>(
+        builder: (context, userProvider, child) {
+          if (userProvider.isLoading) {
+            return const Scaffold(
+              body: Center(child: CircularProgressIndicator()),
+            );
+          }
+          return userProvider.currentUser != null
+              ? const Home()
+              : const LoginScreen();
+        },
+      ),
     );
   }
 }

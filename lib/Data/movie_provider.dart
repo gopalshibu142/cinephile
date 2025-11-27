@@ -190,6 +190,7 @@ class Movie {
   final double voteAverage;
   final bool adult;
   final String releaseDate;
+  final List<int> genreIds;
 
   Movie({
     required this.id,
@@ -199,6 +200,7 @@ class Movie {
     required this.voteAverage,
     required this.releaseDate,
     required this.adult,
+    required this.genreIds,
   });
 
   factory Movie.fromJson(Map<String, dynamic> json) {
@@ -210,6 +212,8 @@ class Movie {
       voteAverage: (json['vote_average'] ?? 0.0).toDouble(),
       releaseDate: json['release_date'] ?? '',
       adult: json['adult'] ?? false,
+      genreIds:
+          json['genre_ids'] != null ? List<int>.from(json['genre_ids']) : [],
     );
   }
 }

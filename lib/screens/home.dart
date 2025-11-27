@@ -1,11 +1,16 @@
 import 'dart:ui';
+import 'package:cinephile/Data/achievements_data.dart';
 import 'package:cinephile/Data/movie_provider.dart';
+import 'package:cinephile/Data/user_provider.dart';
 import 'package:cinephile/screens/movie_screen.dart';
+import 'package:cinephile/screens/profile_screen.dart';
 import 'package:cinephile/screens/watchlist_screen.dart';
 import 'package:cinephile/screens/watched_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:cinephile/screens/movie_search_delegate.dart';
+import 'package:lottie/lottie.dart';
+import 'dart:async';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -18,6 +23,7 @@ class _HomeState extends State<Home> {
   late PageController _trendingController;
   final ScrollController _scrollController = ScrollController();
   int _selectedIndex = 0;
+  StreamSubscription? _achievementSubscription;
 
   @override
   void initState() {
@@ -27,6 +33,13 @@ class _HomeState extends State<Home> {
       final provider = Provider.of<MovieProvider>(context, listen: false);
       provider.getTrendingMovies();
       provider.getAllMovies();
+
+      // Listen for achievements
+      final userProvider = Provider.of<UserProvider>(context, listen: false);
+      _achievementSubscription =
+          userProvider.achievementStream.listen((achievement) {
+        _showAchievementDialog(achievement);
+      });
     });
     _scrollController.addListener(_onScroll);
   }
@@ -35,7 +48,96 @@ class _HomeState extends State<Home> {
   void dispose() {
     _trendingController.dispose();
     _scrollController.dispose();
+    _achievementSubscription?.cancel();
     super.dispose();
+  }
+
+  void _showAchievementDialog(Achievement achievement) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return Dialog(
+          backgroundColor: Colors.transparent,
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              // Lottie Animation (Confetti/Trophy)
+              // Using a network Lottie for now, or a local asset if available.
+              // Since I don't have a local asset, I'll use a container with animation logic or just the dialog content
+              // Ideally, use: Lottie.asset('assets/achievement.json')
+              // For now, I'll use a generic placeholder or try a network one if allowed, but safer to stick to UI
+              Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF1E1E1E),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: achievement.color, width: 2),
+                  boxShadow: [
+                    BoxShadow(
+                      color: achievement.color.withOpacity(0.5),
+                      blurRadius: 20,
+                      spreadRadius: 5,
+                    )
+                  ],
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Lottie.network(
+                      'https://assets10.lottiefiles.com/packages/lf20_touohxv0.json', // Generic Trophy/Confetti
+                      height: 150,
+                      errorBuilder: (context, error, stackTrace) => Icon(
+                        achievement.icon,
+                        size: 100,
+                        color: achievement.color,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    const Text(
+                      "ACHIEVEMENT UNLOCKED!",
+                      style: TextStyle(
+                        color: Colors.amber,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 1.2,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      achievement.title,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 5),
+                    Text(
+                      achievement.description,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(color: Colors.white70),
+                    ),
+                    const SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: () => Navigator.pop(context),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: achievement.color,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                      ),
+                      child: const Text("Awesome!",
+                          style: TextStyle(color: Colors.white)),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   void _onScroll() {
@@ -57,7 +159,7 @@ class _HomeState extends State<Home> {
       homePage(),
       const WatchlistScreen(),
       const WatchedScreen(),
-      profile(),
+      const ProfileScreen(),
     ];
 
     return Scaffold(
@@ -496,13 +598,6 @@ class _HomeState extends State<Home> {
           Icon(icon, color: Colors.white, size: 14),
         ],
       ),
-    );
-  }
-
-  Widget profile() {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Profile')),
-      body: const Center(child: Text('Profile')),
     );
   }
 }
