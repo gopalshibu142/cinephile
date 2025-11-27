@@ -394,4 +394,101 @@ final List<Achievement> allAchievements = [
     color: Colors.tealAccent,
     condition: (total, genres) => genres.keys.length >= 5,
   ),
+  // --- Genre Combinations ---
+  Achievement(
+    code: 'combo_action_comedy',
+    title: 'Action Comedy Fan',
+    description: 'Watch 5 Action and 5 Comedy movies',
+    icon: Icons.emoji_emotions,
+    color: Colors.orange,
+    condition: (total, genres) =>
+        (genres[action] ?? 0) >= 5 && (genres[comedy] ?? 0) >= 5,
+  ),
+  Achievement(
+    code: 'combo_rom_com',
+    title: 'RomCom Lover',
+    description: 'Watch 5 Romance and 5 Comedy movies',
+    icon: Icons.favorite_border,
+    color: Colors.pinkAccent,
+    condition: (total, genres) =>
+        (genres[romance] ?? 0) >= 5 && (genres[comedy] ?? 0) >= 5,
+  ),
+  Achievement(
+    code: 'combo_scifi_horror',
+    title: 'Sci-Fi Horror Buff',
+    description: 'Watch 5 Sci-Fi and 5 Horror movies',
+    icon: Icons.science,
+    color: Colors.deepPurpleAccent,
+    condition: (total, genres) =>
+        (genres[scienceFiction] ?? 0) >= 5 && (genres[horror] ?? 0) >= 5,
+  ),
+  Achievement(
+    code: 'combo_family_adventure',
+    title: 'Family Adventure',
+    description: 'Watch 5 Family and 5 Adventure movies',
+    icon: Icons.backpack,
+    color: Colors.lightGreen,
+    condition: (total, genres) =>
+        (genres[family] ?? 0) >= 5 && (genres[adventure] ?? 0) >= 5,
+  ),
+
+  // --- Higher Genre Tiers ---
+  Achievement(
+    code: 'action_50',
+    title: 'Action Star',
+    description: 'Watch 50 Action movies',
+    icon: Icons.local_activity,
+    color: Colors.red,
+    condition: (total, genres) => (genres[action] ?? 0) >= 50,
+  ),
+  Achievement(
+    code: 'comedy_50',
+    title: 'Comedy Legend',
+    description: 'Watch 50 Comedy movies',
+    icon: Icons.theater_comedy,
+    color: Colors.yellowAccent,
+    condition: (total, genres) => (genres[comedy] ?? 0) >= 50,
+  ),
+  Achievement(
+    code: 'drama_50',
+    title: 'Drama Icon',
+    description: 'Watch 50 Drama movies',
+    icon: Icons.star_rate,
+    color: Colors.tealAccent,
+    condition: (total, genres) => (genres[drama] ?? 0) >= 50,
+  ),
+
+  // --- Variety & Fun ---
+  Achievement(
+    code: 'variety_5',
+    title: 'Taste Tester',
+    description: 'Watch movies from 5 different genres',
+    icon: Icons.palette,
+    color: Colors.indigoAccent,
+    condition: (total, genres) => genres.keys.length >= 5,
+  ),
+  Achievement(
+    code: 'variety_10',
+    title: 'Genre Explorer',
+    description: 'Watch movies from 10 different genres',
+    icon: Icons.explore_off,
+    color: Colors.indigo,
+    condition: (total, genres) => genres.keys.length >= 10,
+  ),
+  Achievement(
+    code: 'count_42',
+    title: 'The Answer',
+    description: 'Watch 42 movies',
+    icon: Icons.question_answer,
+    color: Colors.blueGrey,
+    condition: (total, genres) => total >= 42,
+  ),
+  Achievement(
+    code: 'lucky_7',
+    title: 'Lucky 7',
+    description: 'Watch 7 movies',
+    icon: Icons.casino,
+    color: Colors.green,
+    condition: (total, genres) => total >= 7,
+  ),
 ];
